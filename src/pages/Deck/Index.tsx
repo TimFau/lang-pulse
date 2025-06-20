@@ -194,9 +194,7 @@ function Deck(props: RootState) {
         setShowAnswer(true);
     }
 
-    // Helper to determine language code for langFrom
-    const getLangFromLangCode = () => {
-        const lang = translateMode === '1to2' ? language1 : language2;
+    const getLangCode = (lang: string | undefined) => {
         const langMap: { [key: string]: string } = {
             spanish: 'es-ES',
             french: 'fr-FR',
@@ -214,7 +212,18 @@ function Deck(props: RootState) {
             }
         }
         return 'en-US';
+    }
+
+    // Helper to determine language code for langFrom
+    const getLangFromLangCode = () => {
+        const lang = translateMode === '1to2' ? language1 : language2;
+        return getLangCode(lang);
     };
+
+    const getLangToLangCode = () => {
+        const lang = translateMode === '1to2' ? language2 : language1;
+        return getLangCode(lang);
+    }
 
     useEffect(() => {
         function getDeckData(value: string) {
@@ -360,17 +369,19 @@ function Deck(props: RootState) {
                         <form onSubmit={handleSubmit}  id="mainApp">
                             {/* Auto-speak toggle */}
                             <div className="auto-speak-toggle">
-                                <label className="switch">
-                                    <input
-                                        type="checkbox"
-                                        checked={autoSpeak}
-                                        onChange={e => setAutoSpeak(e.target.checked)}
-                                        aria-checked={autoSpeak}
-                                        aria-label="Automatically speak each question"
-                                    />
-                                    <span className="slider" />
-                                </label>
-                                <span>Automatically speak each question</span>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <label className="switch">
+                                        <input
+                                            type="checkbox"
+                                            checked={autoSpeak}
+                                            onChange={e => setAutoSpeak(e.target.checked)}
+                                            aria-checked={autoSpeak}
+                                            aria-label="Automatically speak each question"
+                                        />
+                                        <span className="slider" />
+                                    </label>
+                                    <span>Automatically speak each question</span>
+                                </div>
                             </div>
                             {inputMode === 'Flashcard' &&
                                 <FlashCard 
@@ -383,8 +394,11 @@ function Deck(props: RootState) {
                                 randomNum={randomNum}
                                 autoSpeak={autoSpeak}
                                 langFromLangCode={getLangFromLangCode()}
+                                langToLangCode={getLangToLangCode()}
+                                deckId={id}
+                                deckName={name}
                                 >
-                                    Translate to <span>{translateMode === "1to2" ? language2 : language1}</span>
+                                    {translateMode === '1to2' ? `${language1} to ${language2}` : `${language2} to ${language1}`}
                                 </FlashCard>
                             }
                             {inputMode === 'Keyboard' &&

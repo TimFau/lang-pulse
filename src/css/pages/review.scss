@@ -1,0 +1,15 @@
+@import '../partials/components/modes/flashCard';
+
+// States unique to Review flow
+.review-config,
+.review-summary,
+.review-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px;
+}
+
+// No additional styles needed; card, button-row, auto-speak toggle, and progress bar
+// inherit fully from the shared flashCard partial. 

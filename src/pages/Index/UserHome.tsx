@@ -7,6 +7,8 @@ import DeckCardSkeleton from '../../components/DeckCardSkeleton';
 import ColdStartMessage from '../../components/ColdStartMessage';
 import FetchErrorMessage from '../../components/Unauthenticated/FetchErrorMessage';
 import { COLD_START_TIMEOUT } from '../../utils/constants';
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function Account() {
 
@@ -78,7 +80,14 @@ export default function Account() {
                         <FetchErrorMessage error={error} onRetry={getAccountDetails} title="Error loading account details" />
                     </div>
                 ) : isReady ? 
-                <UserDecks userId={userId} userName={userName} />
+                <>
+                    <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                        <Button component={Link} to="/review" variant="contained" color="primary" size="large">
+                            Start a Review Session
+                        </Button>
+                    </div>
+                    <UserDecks userId={userId} userName={userName} />
+                </>
                 :
                 isColdStart ? (
                     <ColdStartMessage maxSeconds={30} />

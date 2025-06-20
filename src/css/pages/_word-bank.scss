@@ -1,0 +1,86 @@
+.word-bank-page {
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+
+  .saved-term-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-content-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-sm;
+
+      .term-info {
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+
+        .MuiSvgIcon-root {
+          color: $text-secondary;
+          font-size: 1.2rem;
+        }
+
+        .sync-chip {
+          margin-left: $spacing-xs;
+          background-color: $background-main;
+          
+          .MuiSvgIcon-root {
+            font-size: 1rem;
+          }
+        }
+      }
+
+      .term-date {
+        color: $text-secondary;
+      }
+    }
+
+    .term-text {
+      margin-bottom: $spacing-xs;
+      word-break: break-word;
+    }
+
+    .term-definition {
+      margin-bottom: $spacing-base;
+      flex-grow: 1;
+      word-break: break-word;
+    }
+
+    .source-deck-link {
+      color: $primary;
+      text-decoration: none;
+      display: block;
+      margin-top: auto;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .source-info {
+      margin-top: auto;
+    }
+
+    .MuiCardActions-root {
+      padding: $spacing-sm;
+      justify-content: flex-end;
+      margin-top: auto;
+
+      .MuiIconButton-root {
+        color: $text-secondary;
+
+        &:hover {
+          color: $danger;
+        }
+      }
+    }
+  }
+} 

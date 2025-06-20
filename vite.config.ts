@@ -18,7 +18,7 @@ export default defineConfig({
       scripts: resolve(__dirname, 'src/scripts'),
       services: resolve(__dirname, 'src/services'),
       store: resolve(__dirname, 'src/store'),
-      hooks: resolve(__dirname, 'src/hooks.ts'),
+      hooks: resolve(__dirname, 'src/hooks'),
       queries: resolve(__dirname, 'src/queries.ts'),
     },
   },

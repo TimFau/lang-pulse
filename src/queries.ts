@@ -213,3 +213,297 @@ export const LOGIN = `
         }
     }
 `
+
+export const GET_DECK_BY_SHEET_ID = gql`
+  query GetDeckBySheetId($deckId: String!) {
+    decks(filter: {
+      deck_id: { _eq: $deckId }
+    }, limit: 1) {
+      id
+      deck_name
+      Language1
+      Language2
+      status
+    }
+  }
+`
+
+export const SAVE_TERM = gql`
+  mutation SaveTerm(
+    $term: String!, 
+    $definition: String!, 
+    $language: String!, 
+    $source_deck_id: ID!,
+    $today: Date!,
+    $source_term_key: String,
+    $source_definition: String,
+    $sync_preference: String,
+    $last_synced_at: Date
+  ) {
+    create_saved_terms_item(
+      data: {
+        term: $term
+        definition: $definition
+        language: $language
+        status: "published"
+        source_deck: { id: $source_deck_id }
+        source_term_key: $source_term_key
+        source_definition: $source_definition
+        sync_preference: $sync_preference
+        last_synced_at: $last_synced_at
+        next_review_at: $today
+        interval: 0
+        ease_factor: 2.5
+        repetition: 0
+      }
+    ) {
+      id
+      term
+      definition
+      language
+      source_term_key
+      source_definition
+      sync_preference
+      last_synced_at
+      next_review_at
+      interval
+      ease_factor
+      repetition
+      source_deck {
+        id
+        deck_name
+        Language2
+        status
+      }
+      user_created {
+        id
+      }
+    }
+  }
+`
+
+export const CHECK_TERM_SAVED = gql`
+  query CheckTermSaved($term: String!, $language: String!) {
+    saved_terms(
+      filter: {
+        _and: [
+          { term: { _eq: $term } }
+          { language: { _eq: $language } }
+        ]
+      }
+      limit: 1
+    ) {
+      id
+      source_deck {
+        id
+        deck_name
+        Language2
+        status
+      }
+    }
+  }
+`
+
+export const BATCH_UPDATE_TERMS = gql`
+  mutation BatchUpdateTerms($items: [BatchUpdateTermInput!]!) {
+    batch_update_saved_terms_items(data: $items) {
+      id
+      term
+      definition
+      language
+    }
+  }
+`
+
+export const UPDATE_MULTIPLE_TERMS = gql`
+  mutation UpdateMultipleTerms($keys: [ID!]!, $data: update_saved_terms_input!) {
+    update_saved_terms_items(ids: $keys, data: $data) {
+      id
+      term
+      definition
+      language
+    }
+  }
+`
+
+export const CHECK_SYNCED_DECK = gql`
+  query CheckSyncedDeck($deckId: String!) {
+    synced_decks(filter: {
+      deck_id: { _eq: $deckId }
+    }) {
+      id
+      sync_preference
+    }
+  }
+`
+
+export const CREATE_SYNCED_DECK = gql`
+  mutation CreateSyncedDeck($deckId: String!, $language: String!, $termCount: Int!) {
+    create_synced_decks_item(data: {
+      deck_id: $deckId
+      language: $language
+      sync_preference: "manual"
+      term_count_at_save: $termCount
+    }) {
+      id
+      deck_id
+      sync_preference
+    }
+  }
+`
+
+export const SAVE_MULTIPLE_TERMS = gql`
+  mutation SaveMultipleTerms($items: [create_saved_terms_input!]!) {
+    create_saved_terms_items(data: $items) {
+      id
+      term
+      definition
+      language
+      source_term_key
+      source_definition
+      source_deck {
+        id
+        deck_name
+        Language2
+        status
+      }
+    }
+  }
+`
+
+export const GET_SAVED_TERM_KEYS = gql`
+  query GetSavedTermKeys($deckId: String!) {
+    saved_terms(
+      filter: {
+        source_deck: {
+          deck_id: { _eq: $deckId }
+        }
+      }
+    ) {
+      id
+      source_term_key
+      term
+      language
+    }
+  }
+`
+
+export const GET_SAVED_TERMS = gql`
+  query GetSavedTerms($limit: Int, $offset: Int) {
+    saved_terms(
+      limit: $limit
+      offset: $offset
+      sort: ["-date_created"]
+    ) {
+      id
+      term
+      definition
+      language
+      sync_preference
+      date_created
+      source_term_key
+      source_definition
+      source_deck {
+        id
+        deck_id
+        deck_name
+        Language2
+        status
+      }
+    }
+  }
+`;
+
+export const DELETE_SAVED_TERM = gql`
+  mutation DeleteSavedTerm($id: ID!) {
+    delete_saved_terms_item(id: $id) {
+      id
+    }
+  }
+`;
+
+export const GET_SAVED_TERMS_FOR_REVIEW_BY_LANGUAGE = gql`
+  query GetSavedTermsForReviewByLanguage($language: String!, $limit: Int) {
+    saved_terms(
+      filter: {
+        language: { _eq: $language }
+      },
+      limit: $limit,
+      sort: "random"
+    ) {
+      id
+      term
+      definition
+      language
+    }
+  }
+`;
+
+export const GET_ALL_SAVED_TERMS_FOR_REVIEW = gql`
+  query GetAllSavedTermsForReview($limit: Int) {
+    saved_terms(
+      limit: $limit,
+    ) {
+      id
+      term
+      definition
+      language
+    }
+  }
+`;
+
+// === Spaced Repetition (SRS) ===
+
+export const UPDATE_SRS_DATA = gql`
+  mutation UpdateSrsData($termId: ID!, $data: update_saved_terms_input!) {
+    update_saved_terms_item(id: $termId, data: $data) {
+      id
+      next_review_at
+      interval
+      ease_factor
+      repetition
+    }
+  }
+`;
+
+export const GET_DUE_SAVED_TERMS_FOR_REVIEW_BY_LANGUAGE = gql`
+  query GetDueSavedTermsForReviewByLanguage($language: String!, $limit: Int, $today: String!) {
+    saved_terms(
+      filter: {
+        _and: [
+          { language: { _eq: $language } },
+          { next_review_at: { _lte: $today } }
+        ]
+      },
+      limit: $limit,
+      sort: "random"
+    ) {
+      id
+      term
+      definition
+      language
+      next_review_at
+      interval
+      ease_factor
+      repetition
+    }
+  }
+`;
+
+export const GET_ALL_DUE_SAVED_TERMS_FOR_REVIEW = gql`
+  query GetAllDueSavedTermsForReview($limit: Int, $today: String!) {
+    saved_terms(
+      filter: { next_review_at: { _lte: $today } },
+      limit: $limit
+    ) {
+      id
+      term
+      definition
+      language
+      next_review_at
+      interval
+      ease_factor
+      repetition
+    }
+  }
+`;
